@@ -29,15 +29,31 @@ new Vue({
       })
         .then((res) => res.json())
         .then(({ todo }) => {
-          console.log(todo)
-
           this.todos.push(todo)
           this.todoTitle = ''
         })
         .catch((e) => console.log(e))
     },
     removeTodo(id) {
-      this.todos = this.todos.filter((t) => t.id !== id)
+      fetch('/api/todo/' + id, { method: 'delete' })
+        .then(() => {
+          this.todos = this.todos.filter((t) => t.id !== id)
+        })
+        .catch((e) => console.log(e))
+    },
+    completeTodo(id) {
+      fetch('/api/todo/' + id, {
+        method: 'put',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ done: true }),
+      })
+        .then((res) => res.json())
+        .then(({ todo }) => {
+          console.log(todo)
+          const index = this.todos.findIndex((t) => t.id === todo.id)
+          this.todos[index].updatedAt = todo.updatedAt
+        })
+        .catch((e) => console.log(e))
     },
   },
   filters: {
