@@ -30,6 +30,7 @@ todoRouter.post('/', async (req: Request<{}, {}, IPostTodo>, res: Response) => {
 todoRouter.put('/:id', async (req: Request<{ id: number }, {}, IPostTodo>, res: Response) => {
   try {
     await Todo.update({ done: req.body.done }, { where: { id: req.params.id } })
+
     const todo = await Todo.findByPk(req.params.id)
 
     res.status(200).json({ todo })
